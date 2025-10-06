@@ -1,19 +1,15 @@
-# Этап сборки
-FROM node:lts-alpine as build
+# Стадия сборки React-приложения
+FROM node:19-alpine as build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build
 
-# Этап запуска
+# Стадия запуска с Nginx
 FROM nginx:alpine
-
-# Копируем собственный конфигурационный файл
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Копируем собранное React-приложение
+# Копируем собранное приложение в папку Nginx
 COPY --from=build /app/build /usr/share/nginx/html
-
+# Копируем наш конфигурационный файл для Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
