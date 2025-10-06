@@ -6,10 +6,13 @@ export default defineConfig({
   mode: "development",
   server: {
     port: 3000,
-    open: true,
+  },
+  preview: {
+    port: 3000,
+    host: true,
   },
   build: {
-    outDir: "dist",
+    outDir: "build",
     assetsDir: "assets",
     sourcemap: true,
   },
