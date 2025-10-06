@@ -2,8 +2,19 @@ import { Terminal } from "xterm";
 
 export class CommandsManager {
   private terminal: Terminal;
+  private commands: Record<string, (args: string[]) => void>;
+  public input = "";
   constructor(terminal: Terminal) {
     this.terminal = terminal;
+
+    this.commands = {
+      help: () => this.showHelp(),
+      clear: () => this.clearTerminal(),
+    };
+  }
+
+  public setInput(value: string) {
+    this.input = value;
   }
 
   private showHelp(): void {
@@ -59,5 +70,35 @@ export class CommandsManager {
 
   private clearTerminal(): void {
     this.terminal.clear();
+  }
+
+  private commandNotFound(command: string) {
+    this.terminal.write(
+      `\r\n\x1b[1;31mКоманда не найдена: ${command}\x1b[0m\r\n`
+    );
+    this.terminal.write("Наберите \x1b[1;33mhelp\x1b[0m для списка команд\r\n");
+  }
+
+  public runCommand() {
+    if (!this.input) {
+      return;
+    }
+
+    const [command, ...args] = this.input.split(" ");
+    const commandName = command.toLowerCase();
+
+    if (this.commands[commandName]) {
+      try {
+        this.commands[commandName](args);
+      } catch (error) {
+        this.terminal.write(
+          `\r\n\x1b[1;31mОшибка выполнения команды: ${error}\x1b[0m\r\n`
+        );
+      }
+
+      return;
+    }
+
+    this.commandNotFound(commandName);
   }
 }
