@@ -6,6 +6,7 @@ export default defineConfig({
   mode: "development",
   server: {
     port: 3000,
+    allowedHosts: ["theharald.ru"],
   },
   preview: {
     port: 3000,
