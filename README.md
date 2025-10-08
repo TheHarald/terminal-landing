@@ -3,5 +3,5 @@
 ```
 
 ```
-docker run -d -p 80:80 --name terminal-landing terminal-landing
+docker run -d -p 3000:3000 --name terminal-landing terminal-landing
 ```
